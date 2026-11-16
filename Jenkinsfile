@@ -15,10 +15,16 @@ pipeline{
                 }
             }
         }
-        stage('2. PHP Syntax Test'){
-            steps{
+        stage('2. PHP Syntax Test') {
+            steps {
                 sh '''
-                    docker run --rm -v "$WORKSPACE":/app -w /app php:8.4-cli sh -c 'find . -name "*.php" -not -path "./vendor/* -print0 | xargs -0 -r -n1 php -1"
+                    docker run --rm \
+                    -v "$WORKSPACE:/app" \
+                    -w /app \
+                    php:8.2-cli \
+                    sh -c 'find . -name "*.php" \
+                    -not -path "./vendor/*" -print0 |
+                    xargs -0 -r -n1 php -l'
                 '''
             }
         }
