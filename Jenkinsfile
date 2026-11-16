@@ -29,13 +29,13 @@ pipeline{
                 '''
             }
         }
-        stgage('4. Deploy Application'){
+        stgag('4. Deploy Application'){
             steps{
                 sh '''
                     docker compose up -d
                 '''
             }
         }
-        
+
     }
 }
