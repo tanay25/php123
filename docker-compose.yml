@@ -1,0 +1,38 @@
+services:
+  web:
+    build: .
+    container_name: php-login-app
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: php_login
+      DB_USER: appuser
+      DB_PASS: php123
+
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  db:
+    image: mysql:8.4
+    container_name: php-login-db
+    environment:
+      MYSQL_DATABASE: php_login
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: php123
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3332:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 60s
+    restart: unless-stopped
+volumes:
+  mysql_data:
